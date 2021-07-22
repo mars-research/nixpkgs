@@ -32752,7 +32752,7 @@ in
   ippcrypto-with-load-mitigation = ippcrypto.override {
     mitigation = "LOAD";
   };
-  ipp-crypto-with-branch-mitigation = ipp-crypto.override {
+  ippcrypto-with-branch-mitigation = ippcrypto.override {
     mitigation = "CF";
   };
 
