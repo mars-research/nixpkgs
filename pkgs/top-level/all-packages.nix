@@ -32749,6 +32749,12 @@ in
   zktree = callPackage ../applications/misc/zktree {};
 
   ippcrypto = callPackage ../os-specific/linux/ippcrypto {};
+  ippcrypto-with-load-mitigation = ippcrypto.override {
+    mitigation = "LOAD";
+  };
+  ipp-crypto-with-branch-mitigation = ipp-crypto.override {
+    mitigation = "CF";
+  };
 
   sgxsdk = callPackage ../os-specific/linux/sgxsdk {};
 }
