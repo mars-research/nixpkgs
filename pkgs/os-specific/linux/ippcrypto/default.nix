@@ -81,7 +81,7 @@ stdenv.mkDerivation {
     cd external/ippcp_internal/
   '';
 
-  buildFlags = if mitigation != null then [ "MITIGATION-CVE-2020-0551=$(mitigation)" ] else [];
+  buildFlags = lib.optionals (mitigation != null) [ "MITIGATION-CVE-2020-0551=$(mitigation)" ];
 
   installPhase = ''
     mkdir -p $out
