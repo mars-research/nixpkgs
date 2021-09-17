@@ -89,6 +89,7 @@ stdenv.mkDerivation rec {
          "--enable-gdb-stub=no" # conflicts with debugger option
          "--enable-iodebug"
          "--enable-fpu"
+         "--enable-vmx=2"
          "--enable-svm"
          "--enable-avx"
          "--enable-evex"
