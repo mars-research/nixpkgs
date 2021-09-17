@@ -47,6 +47,7 @@ stdenv.mkDerivation rec {
     "--with-rfb=no"
     "--with-vncsrv=no"
     "--with-svga=no" # it doesn't compile on NixOS
+    "--with-nogui"
 
     # These will always be "yes" on NixOS
     "--enable-ltdl-install=yes"
