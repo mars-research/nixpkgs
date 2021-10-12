@@ -3,28 +3,29 @@
 , fetchpatch
 , fetchurl
 , fetchFromGitHub
+, callPackage
 , autoconf
 , automake
 , binutils
-, bison
 , cmake
 , file
-, flex
 , git
-, gnum4
 , libtool
 , nasm
+, ncurses
 , ocaml
 , ocamlPackages
 , openssl
 , perl
 , python3
 , texinfo
+, writeShellScript
 }:
 
-stdenv.mkDerivation {
+stdenv.mkDerivation rec {
   pname = "sgx-sdk";
   version = "2.14";
+
   src = fetchFromGitHub {
     owner = "intel";
     repo = "linux-sgx";
@@ -32,10 +33,11 @@ stdenv.mkDerivation {
     sha256 = "1cr2mkk459s270ng0yddgcryi0zc3dfmg9rmdrdh9mhy2mc1kx0g";
     fetchSubmodules = true;
   };
-  dontConfigure = true;
+
   prePatch = ''
-    patchShebangs ./linux/installer/bin/build-installpkg.sh \
-      ./linux/installer/common/sdk/{createTarball.sh,install.sh}
+    patchShebangs ./linux/installer/bin/build-installpkg.sh
+    patchShebangs ./linux/installer/common/sdk/createTarball.sh
+    patchShebangs ./linux/installer/common/sdk/install.sh
   '';
   patches = [
     (fetchpatch {
@@ -48,62 +50,111 @@ stdenv.mkDerivation {
       url = "https://github.com/intel/linux-sgx/commit/e5929083f8161a8e7404afc0577936003fbb9d0b.patch";
       sha256 = "12bgs9rxlq82hn5prl9qz2r4mwypink8hzdz4cki4k4cmkw961f5";
     })
-    (fetchpatch {
-      name = "ipp-crypto-makefile.patch";
-      url = "https://github.com/intel/linux-sgx/commit/b1e1b2e9743c21460c7ab7637099818f656f9dd3.patch";
-      sha256 = "14h6xkk7m89mkjc75r8parll8pmq493incq5snwswsbdzibrdi68";
-    })
   ];
+
+  dontConfigure = true;
+
+  # SDK built with stackprotector produces broken encalves which crash at runtime
+  hardeningDisable = [ "stackprotector" ];
+
   nativeBuildInputs = [
-    autoconf
-    automake
-    bison
     cmake
-    libtool
-    file
-    flex
     git
-    gnum4
-    nasm
     ocaml
     ocamlPackages.ocamlbuild
-    openssl
     perl
-    texinfo
-  ];
-  buildInputs = [
-    binutils
     python3
+    texinfo
+    nasm
+    file
+    ncurses
+    autoconf
+    automake
   ];
-  preBuild = ''
-    export BINUTILS_DIR=${binutils}/bin
-  '';
-  buildPhase = ''
-    runHook preBuild
 
-    cd external/ippcp_internal/
-    make
-    make clean
-    make MITIGATION-CVE-2020-0551=LOAD
-    make clean
-    make MITIGATION-CVE-2020-0551=CF
+  buildInputs = [
+    libtool
+    openssl
+  ];
+
+  BINUTILS_DIR = "${binutils}/bin";
+
+  # First, build external/ippcp_internal, Makefile is rewritten to make the build
+  # faster by splitting different versions of ipp-crypto builds and to avoid
+  # patching the Makefile for reproducibility issues.
+  buildPhase = let
+    ipp-crypto-no_mitigation = callPackage (import ./ipp-crypto.nix) {};
+
+    sgx-asm-pp = "python ${src}/build-scripts/sgx-asm-pp.py --assembler=nasm";
+
+    nasm-load = writeShellScript "nasm-load"
+                  "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=LOAD $@";
+    ipp-crypto-cve_2020_0551_load = callPackage (import ./ipp-crypto.nix) {
+      extraCmakeFlags = [ "-DCMAKE_ASM_NASM_COMPILER=${nasm-load}" ];
+    };
+
+    nasm-cf = writeShellScript "nasm-cf"
+                "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=CF $@";
+    ipp-crypto-cve_2020_0551_cf = callPackage (import ./ipp-crypto.nix) {
+      extraCmakeFlags = [ "-DCMAKE_ASM_NASM_COMPILER=${nasm-cf}" ];
+    };
+
+  in ''
+    export ARCH=intel64
+    cd external/ippcp_internal
+
+    mkdir -p lib/linux/intel64/no_mitigation
+    cp ${ipp-crypto-no_mitigation}/lib/intel64/libippcp.a lib/linux/intel64/no_mitigation
+    chmod a+w lib/linux/intel64/no_mitigation/libippcp.a
+    cp ${ipp-crypto-no_mitigation}/include/* ./inc
+
+    mkdir -p lib/linux/intel64/cve_2020_0551_load
+    cp ${ipp-crypto-cve_2020_0551_load}/lib/intel64/libippcp.a lib/linux/intel64/cve_2020_0551_load
+    chmod a+w lib/linux/intel64/cve_2020_0551_load/libippcp.a
+
+    mkdir -p lib/linux/intel64/cve_2020_0551_cf
+    cp ${ipp-crypto-cve_2020_0551_cf}/lib/intel64/libippcp.a lib/linux/intel64/cve_2020_0551_cf
+    chmod a+w lib/linux/intel64/cve_2020_0551_cf/libippcp.a
+
+    rm -f ./inc/ippcp.h
+    patch ${ipp-crypto-no_mitigation}/include/ippcp.h -i ./inc/ippcp20u3.patch -o ./inc/ippcp.h
+
+    mkdir -p license
+    cp ${ipp-crypto-no_mitigation.src}/LICENSE ./license
+  '' +
+  # Build the SDK installation package.
+  # Nix patches make so that $(SHELL) defaults to "sh" instead of "/bin/sh".
+  # The build uses $(SHELL) as an argument to file -L which requires a path.
+  ''
     cd ../..
 
-    make sdk_install_pkg
+    make SHELL=$SHELL sdk_install_pkg
 
     runHook postBuild
   '';
+
   postBuild = ''
     patchShebangs ./linux/installer/bin/sgx_linux_x64_sdk_*.bin
   '';
+
   installPhase = ''
     echo -e 'no\n'$out | ./linux/installer/bin/sgx_linux_x64_sdk_*.bin
+  '';
+
+  dontFixup = true;
+
+  doInstallCheck = true;
+  installCheckPhase = ''
+    source $out/sgxsdk/environment
+    cd SampleCode/SampleEnclave
+    make SGX_MODE=SGX_SIM
+    ./app
   '';
 
   meta = with lib; {
     description = "Intel SGX SDK for Linux built with IPP Crypto Library";
     homepage = "https://github.com/intel/linux-sgx";
-    maintainers = [ maintainers.sbellem ];
+    maintainers = with maintainers; [ sbellem arturcygan ];
     platforms = platforms.linux;
     license = with licenses; [ bsd3 ];
   };
