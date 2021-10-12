@@ -20936,10 +20936,6 @@ in
   iotop = callPackage ../os-specific/linux/iotop { };
   iotop-c = callPackage ../os-specific/linux/iotop-c { };
 
-  ippcrypto = callPackage ../os-specific/linux/ippcrypto {};
-  ippcrypto-with-branch-mitigation = ippcrypto.override { mitigation = "CF"; };
-  ippcrypto-with-load-mitigation = ippcrypto.override { mitigation = "LOAD"; };
-
   iproute2 = callPackage ../os-specific/linux/iproute { };
 
   iproute_mptcp = callPackage ../os-specific/linux/iproute/mptcp.nix { };
@@ -21965,7 +21961,7 @@ in
 
   seturgent = callPackage ../os-specific/linux/seturgent { };
 
-  sgxsdk = callPackage ../os-specific/linux/sgxsdk {};
+  sgx-sdk = callPackage ../os-specific/linux/sgx-sdk {};
 
   shadow = callPackage ../os-specific/linux/shadow { };
 
