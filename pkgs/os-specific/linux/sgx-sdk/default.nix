@@ -55,8 +55,9 @@ stdenv.mkDerivation rec {
 
   dontConfigure = true;
 
-  # SDK built with stackprotector produces broken encalves which crash at runtime
-  hardeningDisable = [ "stackprotector" ];
+  # SDK built with stackprotector produces broken encalves which crash at runtime.
+  # Disable all to be safe, SDK build configures compiler mitigations manually.
+  hardeningDisable = [ "all" ];
 
   nativeBuildInputs = [
     cmake
@@ -80,9 +81,9 @@ stdenv.mkDerivation rec {
 
   BINUTILS_DIR = "${binutils}/bin";
 
-  # First, build external/ippcp_internal, Makefile is rewritten to make the build
-  # faster by splitting different versions of ipp-crypto builds and to avoid
-  # patching the Makefile for reproducibility issues.
+  # Build external/ippcp_internal first. The Makefile is rewritten to make the
+  # build faster by splitting different versions of ipp-crypto builds and to
+  # avoid patching the Makefile for reproducibility issues.
   buildPhase = let
     ipp-crypto-no_mitigation = callPackage (import ./ipp-crypto.nix) {};
 
@@ -98,7 +99,6 @@ stdenv.mkDerivation rec {
       extraCmakeFlags = [ "-DCMAKE_ASM_NASM_COMPILER=${nasm-cf}" ];
     };
   in ''
-    export ARCH=intel64
     cd external/ippcp_internal
 
     mkdir -p lib/linux/intel64/no_mitigation
