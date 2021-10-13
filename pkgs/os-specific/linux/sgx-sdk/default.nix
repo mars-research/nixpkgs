@@ -19,6 +19,7 @@
 , perl
 , python3
 , texinfo
+, which
 , writeShellScript
 }:
 
@@ -34,11 +35,6 @@ stdenv.mkDerivation rec {
     fetchSubmodules = true;
   };
 
-  prePatch = ''
-    patchShebangs ./linux/installer/bin/build-installpkg.sh
-    patchShebangs ./linux/installer/common/sdk/createTarball.sh
-    patchShebangs ./linux/installer/common/sdk/install.sh
-  '';
   patches = [
     (fetchpatch {
       name = "replace-bin-cp-with-cp.patch";
@@ -51,6 +47,11 @@ stdenv.mkDerivation rec {
       sha256 = "12bgs9rxlq82hn5prl9qz2r4mwypink8hzdz4cki4k4cmkw961f5";
     })
   ];
+  postPatch = ''
+    patchShebangs ./linux/installer/bin/build-installpkg.sh \
+      ./linux/installer/common/sdk/createTarball.sh \
+      ./linux/installer/common/sdk/install.sh
+  '';
 
   dontConfigure = true;
 
@@ -87,18 +88,15 @@ stdenv.mkDerivation rec {
 
     sgx-asm-pp = "python ${src}/build-scripts/sgx-asm-pp.py --assembler=nasm";
 
-    nasm-load = writeShellScript "nasm-load"
-                  "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=LOAD $@";
+    nasm-load = writeShellScript "nasm-load" "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=LOAD $@";
     ipp-crypto-cve_2020_0551_load = callPackage (import ./ipp-crypto.nix) {
       extraCmakeFlags = [ "-DCMAKE_ASM_NASM_COMPILER=${nasm-load}" ];
     };
 
-    nasm-cf = writeShellScript "nasm-cf"
-                "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=CF $@";
+    nasm-cf = writeShellScript "nasm-cf" "${sgx-asm-pp} --MITIGATION-CVE-2020-0551=CF $@";
     ipp-crypto-cve_2020_0551_cf = callPackage (import ./ipp-crypto.nix) {
       extraCmakeFlags = [ "-DCMAKE_ASM_NASM_COMPILER=${nasm-cf}" ];
     };
-
   in ''
     export ARCH=intel64
     cd external/ippcp_internal
@@ -121,13 +119,12 @@ stdenv.mkDerivation rec {
 
     mkdir -p license
     cp ${ipp-crypto-no_mitigation.src}/LICENSE ./license
-  '' +
-  # Build the SDK installation package.
-  # Nix patches make so that $(SHELL) defaults to "sh" instead of "/bin/sh".
-  # The build uses $(SHELL) as an argument to file -L which requires a path.
-  ''
+
+    # Build the SDK installation package.
     cd ../..
 
+    # Nix patches make so that $(SHELL) defaults to "sh" instead of "/bin/sh".
+    # The build uses $(SHELL) as an argument to file -L which requires a path.
     make SHELL=$SHELL sdk_install_pkg
 
     runHook postBuild
@@ -144,6 +141,7 @@ stdenv.mkDerivation rec {
   dontFixup = true;
 
   doInstallCheck = true;
+  installCheckInputs = [ which ];
   installCheckPhase = ''
     source $out/sgxsdk/environment
     cd SampleCode/SampleEnclave
@@ -155,7 +153,7 @@ stdenv.mkDerivation rec {
     description = "Intel SGX SDK for Linux built with IPP Crypto Library";
     homepage = "https://github.com/intel/linux-sgx";
     maintainers = with maintainers; [ sbellem arturcygan ];
-    platforms = platforms.linux;
+    platforms = [ "x86_64-linux" ];
     license = with licenses; [ bsd3 ];
   };
 }
