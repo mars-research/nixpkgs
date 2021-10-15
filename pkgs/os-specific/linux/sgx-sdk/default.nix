@@ -55,7 +55,7 @@ stdenv.mkDerivation rec {
 
   dontConfigure = true;
 
-  # SDK built with stackprotector produces broken encalves which crash at runtime.
+  # SDK built with stackprotector produces broken enclaves which crash at runtime.
   # Disable all to be safe, SDK build configures compiler mitigations manually.
   hardeningDisable = [ "all" ];
 
