@@ -1,0 +1,48 @@
+name: Merge upstream nixpkgs
+
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: "0 11 * * 0"
+
+env:
+  UPSTREAM_REPO: https://github.com/NixOS/nixpkgs
+  UPSTREAM_BRANCH: nixos-unstable
+  UPSTREAM_VERSION: 22.11
+
+jobs:
+  merge-upstream-nixpkgs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: cachix/install-nix-action@v17
+        with:
+          install_url: https://releases.nixos.org/nix/nix-2.9.2/install
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+
+      - name: Add upstream remote
+        run: |
+          git remote add upstream $UPSTREAM_REPO
+          git fetch upstream $UPSTREAM_BRANCH
+
+      - name: Ensure the correct version is being merged
+        run: |
+          REAL_UPSTREAM_VERSION=$(git show upstream/$UPSTREAM_BRANCH:.version)
+          if [[ "$UPSTREAM_VERSION" != "$REAL_UPSTREAM_VERSION" ]]; then
+            >&2 echo "Error: Upstream version ($REAL_UPSTREAM_VERSION) is not what we want ($UPSTREAM_VERSION)"
+            false
+          fi
+
+      - name: Merge upstream
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "github-actions[bot]"
+          git merge --no-ff --no-edit upstream/$UPSTREAM_BRANCH
+
+      - name: Push changes
+        uses: ad-m/github-push-action@9a46ba8d86d3171233e861a4351b1278a2805c83
