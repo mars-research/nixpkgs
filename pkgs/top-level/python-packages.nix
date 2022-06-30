@@ -617,6 +617,8 @@ in {
 
   archinfo = callPackage ../development/python-modules/archinfo { };
 
+  archspec = callPackage ../development/python-modules/archspec { };
+
   area = callPackage ../development/python-modules/area { };
 
   arelle = callPackage ../development/python-modules/arelle {
@@ -888,6 +890,8 @@ in {
   azure-cosmosdb-nspkg = callPackage ../development/python-modules/azure-cosmosdb-nspkg { };
 
   azure-cosmosdb-table = callPackage ../development/python-modules/azure-cosmosdb-table { };
+
+  azure-data-tables = callPackage ../development/python-modules/azure-data-tables { };
 
   azure-datalake-store = callPackage ../development/python-modules/azure-datalake-store { };
 
@@ -1348,11 +1352,6 @@ in {
   # Build boost for this specific Python version
   # TODO: use separate output for libboost_python.so
   boost = toPythonModule (pkgs.boost.override {
-    inherit (self) python numpy;
-    enablePython = true;
-  });
-
-  boost169 = toPythonModule (pkgs.boost169.override {
     inherit (self) python numpy;
     enablePython = true;
   });
@@ -2735,7 +2734,7 @@ in {
 
   emailthreads = callPackage ../development/python-modules/emailthreads { };
 
-  email_validator = callPackage ../development/python-modules/email-validator { };
+  email-validator = callPackage ../development/python-modules/email-validator { };
 
   embrace = callPackage ../development/python-modules/embrace { };
 
@@ -3033,6 +3032,8 @@ in {
   filebrowser_safe = callPackage ../development/python-modules/filebrowser_safe { };
 
   filebytes = callPackage ../development/python-modules/filebytes { };
+
+  filecheck = callPackage ../development/python-modules/filecheck { };
 
   filelock = callPackage ../development/python-modules/filelock { };
 
@@ -4015,6 +4016,8 @@ in {
 
   hpack = callPackage ../development/python-modules/hpack { };
 
+  hpccm = callPackage ../development/python-modules/hpccm { };
+
   hsaudiotag3k = callPackage ../development/python-modules/hsaudiotag3k { };
 
   hsluv = callPackage ../development/python-modules/hsluv { };
@@ -4249,6 +4252,8 @@ in {
 
   incremental = callPackage ../development/python-modules/incremental { };
 
+  infinity = callPackage ../development/python-modules/infinity { };
+
   inflect = callPackage ../development/python-modules/inflect { };
 
   inflection = callPackage ../development/python-modules/inflection { };
@@ -4320,8 +4325,6 @@ in {
   iowait = callPackage ../development/python-modules/iowait { };
 
   ipaddr = callPackage ../development/python-modules/ipaddr { };
-
-  ipaddress = callPackage ../development/python-modules/ipaddress { };
 
   ipdb = callPackage ../development/python-modules/ipdb { };
 
@@ -4825,7 +4828,6 @@ in {
 
   ledger = (toPythonModule (pkgs.ledger.override {
     usePython = true;
-    boost = pkgs.boost179; # Current default boost (1.77) doesn’t work with Python 3.10.
     python3 = python;
   })).py;
 
@@ -5304,6 +5306,8 @@ in {
 
   md-toc = callPackage ../development/python-modules/md-toc { };
 
+  mdx-truly-sane-lists = callPackage ../development/python-modules/mdx-truly-sane-lists { };
+
   md2gemini = callPackage ../development/python-modules/md2gemini { };
 
   mdformat = callPackage ../development/python-modules/mdformat { };
@@ -5437,6 +5441,7 @@ in {
 
   mkdocs = callPackage ../development/python-modules/mkdocs { };
   mkdocs-drawio-exporter = callPackage ../development/python-modules/mkdocs-drawio-exporter { };
+  mkdocs-exclude = callPackage ../development/python-modules/mkdocs-exclude { };
   mkdocs-gitlab = callPackage ../development/python-modules/mkdocs-gitlab-plugin { };
   mkdocs-macros = callPackage ../development/python-modules/mkdocs-macros { };
   mkdocs-material = callPackage ../development/python-modules/mkdocs-material { };
@@ -5930,8 +5935,6 @@ in {
 
   nsapi = callPackage ../development/python-modules/nsapi { };
 
-  ntfy-webpush = callPackage ../tools/misc/ntfy-webpush { };
-
   ntc-templates = callPackage ../development/python-modules/ntc-templates { };
 
   ntlm-auth = callPackage ../development/python-modules/ntlm-auth { };
@@ -6138,8 +6141,6 @@ in {
 
   opuslib = callPackage ../development/python-modules/opuslib { };
 
-  ordereddict = callPackage ../development/python-modules/ordereddict { };
-
   orderedmultidict = callPackage ../development/python-modules/orderedmultidict { };
 
   ordered-set = callPackage ../development/python-modules/ordered-set { };
@@ -6163,6 +6164,8 @@ in {
   osc-lib = callPackage ../development/python-modules/osc-lib { };
 
   oscrypto = callPackage ../development/python-modules/oscrypto { };
+
+  oscpy = callPackage ../development/python-modules/oscpy { };
 
   oset = callPackage ../development/python-modules/oset { };
 
@@ -6927,7 +6930,9 @@ in {
 
   psd-tools = callPackage ../development/python-modules/psd-tools { };
 
-  psutil = callPackage ../development/python-modules/psutil { };
+  psutil = callPackage ../development/python-modules/psutil {
+    inherit (pkgs.darwin.apple_sdk.frameworks) IOKit;
+  };
 
   psycopg2 = callPackage ../development/python-modules/psycopg2 { };
 
@@ -7199,9 +7204,9 @@ in {
 
   pycryptodome = callPackage ../development/python-modules/pycryptodome { };
 
-  pycryptodome-test-vectors = callPackage ../development/python-modules/pycryptodome-test-vectors { };
-
   pycryptodomex = callPackage ../development/python-modules/pycryptodomex { };
+
+  pycsdr = callPackage ../development/python-modules/pycsdr { };
 
   pyct = callPackage ../development/python-modules/pyct { };
 
@@ -7250,6 +7255,8 @@ in {
   pydexcom = callPackage ../development/python-modules/pydexcom { };
 
   pydicom = callPackage ../development/python-modules/pydicom { };
+
+  pydigiham = callPackage ../development/python-modules/pydigiham { };
 
   pydispatcher = callPackage ../development/python-modules/pydispatcher { };
 
@@ -7553,7 +7560,7 @@ in {
 
   pylaunches = callPackage ../development/python-modules/pylaunches { };
 
-  PyLD = callPackage ../development/python-modules/PyLD { };
+  pyld = callPackage ../development/python-modules/pyld { };
 
   pylev = callPackage ../development/python-modules/pylev { };
 
@@ -9519,6 +9526,8 @@ in {
 
   scramp = callPackage ../development/python-modules/scramp { };
 
+  scrap-engine = callPackage ../development/python-modules/scrap-engine { };
+
   scrapy = callPackage ../development/python-modules/scrapy { };
 
   scrapy-deltafetch = callPackage ../development/python-modules/scrapy-deltafetch { };
@@ -10008,6 +10017,8 @@ in {
 
   sphinx-autobuild = callPackage ../development/python-modules/sphinx-autobuild { };
 
+  sphinx-basic-ng = callPackage ../development/python-modules/sphinx-basic-ng { };
+
   sphinx-copybutton = callPackage ../development/python-modules/sphinx-copybutton { };
 
   sphinx-inline-tabs = callPackage ../development/python-modules/sphinx-inline-tabs { };
@@ -10283,6 +10294,8 @@ in {
   };
 
   tablib = callPackage ../development/python-modules/tablib { };
+
+  tabula-py = callPackage ../development/python-modules/tabula-py { };
 
   tabulate = callPackage ../development/python-modules/tabulate { };
 
@@ -10659,6 +10672,8 @@ in {
 
   trio-asyncio = callPackage ../development/python-modules/trio-asyncio { };
 
+  trio-websocket = callPackage ../development/python-modules/trio-websocket { };
+
   trueskill = callPackage ../development/python-modules/trueskill { };
 
   trustme = callPackage ../development/python-modules/trustme { };
@@ -10837,7 +10852,9 @@ in {
 
   ueagle = callPackage ../development/python-modules/ueagle { };
 
-  uharfbuzz = callPackage ../development/python-modules/uharfbuzz { };
+  uharfbuzz = callPackage ../development/python-modules/uharfbuzz {
+    inherit (pkgs.darwin.apple_sdk.frameworks) ApplicationServices;
+  };
 
   ujson = callPackage ../development/python-modules/ujson { };
 
@@ -10992,6 +11009,10 @@ in {
   validphys2 = callPackage ../development/python-modules/validphys2 { };
 
   vallox-websocket-api = callPackage ../development/python-modules/vallox-websocket-api { };
+
+  vapoursynth = callPackage ../development/python-modules/vapoursynth {
+    inherit (pkgs) vapoursynth;
+  };
 
   variants = callPackage ../development/python-modules/variants { };
 
