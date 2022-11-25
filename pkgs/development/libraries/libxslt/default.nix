@@ -11,7 +11,7 @@
 , libxcrypt
 , libgcrypt
 , cryptoSupport ? false
-, pythonSupport ? true
+, pythonSupport ? libxml2.pythonSupport
 , gnome
 }:
 
@@ -83,7 +83,7 @@ stdenv.mkDerivation rec {
     description = "A C library and tools to do XSL transformations";
     license = licenses.mit;
     platforms = platforms.all;
-    maintainers = with maintainers; [ eelco jtojnar ];
+    maintainers = with maintainers; [ eelco ];
     broken = pythonSupport && !libxml2.pythonSupport; # see #73102 for why this is not an assert
   };
 }

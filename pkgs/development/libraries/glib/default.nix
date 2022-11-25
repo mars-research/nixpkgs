@@ -1,4 +1,14 @@
-{ config, lib, stdenv, fetchurl, gettext, meson, ninja, pkg-config, perl, python3
+{ config
+, lib
+, stdenv
+, fetchurl
+, fetchpatch
+, gettext
+, meson
+, ninja
+, pkg-config
+, perl
+, python3
 , libiconv, zlib, libffi, pcre2, libelf, gnome, libselinux, bash, gnum4, gtk-doc, docbook_xsl, docbook_xml_dtd_45, libxslt
 # use util-linuxMinimal to avoid circular dependency (util-linux, systemd, glib)
 , util-linuxMinimal ? null
@@ -8,6 +18,8 @@
 , coreutils, dbus, libxml2, tzdata
 , desktop-file-utils, shared-mime-info
 , darwin
+# update script
+, runCommand, git, coccinelle
 }:
 
 assert stdenv.isLinux -> util-linuxMinimal != null;
@@ -93,6 +105,14 @@ stdenv.mkDerivation (finalAttrs: {
     # Disable flaky test.
     # https://gitlab.gnome.org/GNOME/glib/-/issues/820
     ./skip-timer-test.patch
+
+    # Fix infinite loop (e.g. in gnome-keyring)
+    # https://github.com/NixOS/nixpkgs/pull/197754#issuecomment-1312805358
+    # https://gitlab.gnome.org/GNOME/glib/-/merge_requests/3039
+    (fetchpatch {
+      url = "https://gitlab.gnome.org/GNOME/glib/-/commit/2a36bb4b7e46f9ac043561c61f9a790786a5440c.patch";
+      sha256 = "b77Hxt6WiLxIGqgAj9ZubzPWrWmorcUOEe/dp01BcXA=";
+    })
   ];
 
   outputs = [ "bin" "out" "dev" "devdoc" ];
@@ -246,6 +266,55 @@ stdenv.mkDerivation (finalAttrs: {
       packageName = "glib";
       versionPolicy = "odd-unstable";
     };
+    /*
+      can be used as part of an update script to automatically create a patch
+      hardcoding the path of all gsettings schemas in C code.
+      For example:
+      passthru = {
+        hardcodeGsettingsPatch = glib.mkHardcodeGsettingsPatch {
+          inherit src;
+          glib-schema-to-var = {
+             ...
+          };
+        };
+
+        updateScript =
+          let
+            updateSource = ...;
+            patch = _experimental-update-script-combinators.copyAttrOutputToFile "evolution-ews.hardcodeGsettingsPatch" ./hardcode-gsettings.patch;
+          in
+          _experimental-update-script-combinators.sequence [
+            updateSource
+            patch
+          ];
+        };
+      }
+      takes as input a mapping from schema path to variable name.
+      For example `{ "org.gnome.evolution" = "EVOLUTION_SCHEMA_PATH"; }`
+      hardcodes looking for `org.gnome.evolution` into `@EVOLUTION_SCHEMA_PATH@`.
+      All schemas must be listed.
+    */
+    mkHardcodeGsettingsPatch = { src, glib-schema-to-var }:
+      runCommand
+        "hardcode-gsettings.patch"
+        {
+          inherit src;
+          nativeBuildInputs = [
+            git
+            coccinelle
+            python3 # For patch script
+          ];
+        }
+        ''
+          unpackPhase
+          cd "''${sourceRoot:-.}"
+          set -x
+          cp ${builtins.toFile "glib-schema-to-var.json" (builtins.toJSON glib-schema-to-var)} ./glib-schema-to-var.json
+          git init
+          git add -A
+          spatch --sp-file "${./hardcode-gsettings.cocci}" --dir . --in-place
+          git diff > "$out"
+        '';
   };
 
   meta = with lib; {

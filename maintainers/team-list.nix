@@ -121,7 +121,7 @@ with lib.maintainers; {
       bobby285271
       mkg20001
     ];
-    scope = "Maintain Cinnamon desktop environment and applications made by the LinuxMint team.";
+    scope = "Maintain Cinnamon desktop environment and applications made by the Linux Mint team.";
     shortName = "Cinnamon";
     enableFeatureFreezePing = true;
   };
@@ -250,7 +250,7 @@ with lib.maintainers; {
   };
 
   freedesktop = {
-    members = [ jtojnar ];
+    members = [ ];
     scope = "Maintain Freedesktop.org packages for graphical desktop.";
     shortName = "freedesktop.org packaging";
   };
@@ -281,7 +281,6 @@ with lib.maintainers; {
     members = [
       bobby285271
       hedning
-      jtojnar
       dasj19
       maxeaubrey
     ];
@@ -629,6 +628,18 @@ with lib.maintainers; {
     ];
     scope = "Manage the current nixpkgs/NixOS release.";
     shortName = "Release";
+  };
+
+  rocm = {
+    members = [
+      Madouura
+      Flakebi
+    ];
+    githubTeams = [
+      "rocm-maintainers"
+    ];
+    scope = "Maintain ROCm and related packages.";
+    shortName = "ROCm";
   };
 
   ruby = {

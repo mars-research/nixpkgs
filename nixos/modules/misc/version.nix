@@ -27,6 +27,7 @@ let
     HOME_URL = "https://nixos.org/";
     DOCUMENTATION_URL = "https://nixos.org/learn.html";
     SUPPORT_URL = "https://nixos.org/community.html";
+    SUPPORT_END = "2023-06-30";
     BUG_REPORT_URL = "https://github.com/NixOS/nixpkgs/issues";
   };
 
@@ -114,7 +115,7 @@ in
     defaultChannel = mkOption {
       internal = true;
       type = types.str;
-      default = "https://nixos.org/channels/nixos-unstable";
+      default = "https://nixos.org/channels/nixos-22.11";
       description = lib.mdDoc "Default NixOS channel to which the root user is subscribed.";
     };
 

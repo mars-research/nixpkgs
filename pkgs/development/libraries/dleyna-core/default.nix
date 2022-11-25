@@ -35,8 +35,8 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "Library of utility functions that are used by the higher level dLeyna";
     homepage = "https://github.com/phako/dleyna-core";
-    maintainers = with maintainers; [ jtojnar ];
-    platforms = platforms.linux;
+    maintainers = with maintainers; [ ];
+    platforms = platforms.unix;
     license = licenses.lgpl21Only;
   };
 }

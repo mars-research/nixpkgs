@@ -56,8 +56,8 @@ stdenv.mkDerivation rec {
   meta = with lib; {
     description = "Library to discover and manipulate Digital Media Renderers";
     homepage = "https://github.com/phako/dleyna-renderer";
-    maintainers = with maintainers; [ jtojnar ];
-    platforms = platforms.linux;
+    maintainers = with maintainers; [ ];
+    platforms = platforms.unix;
     license = licenses.lgpl21Only;
   };
 }
