@@ -708,8 +708,13 @@ let
           version = "2.2.6";
           sha256 = "sha256-1yZeyLrXuubhKzobWcd00F/CdU824uJDTkB6qlHkJlQ=";
         };
-        meta = {
-          license = lib.licenses.mit;
+        meta = with lib; {
+          changelog = "https://marketplace.visualstudio.com/items/dbaeumer.vscode-eslint/changelog";
+          description = "Integrates ESLint JavaScript into VS Code.";
+          downloadPage = "https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint";
+          homepage = "https://github.com/Microsoft/vscode-eslint";
+          license = licenses.mit;
+          maintainers = with maintainers; [ datafoo ];
         };
       };
 
@@ -730,8 +735,8 @@ let
         mktplcRef = {
           name = "vscode-markdownlint";
           publisher = "DavidAnson";
-          version = "0.48.1";
-          sha256 = "sha256-3TpZGvas+pfabHayaA6Yd9nOO2MbfXbCvCiTcbja9Vo=";
+          version = "0.49.0";
+          sha256 = "sha256-Mh/OoRK410aXEr3sK2CYFDsXGSqFT+JOWi9jHOdK01Y=";
         };
         meta = with lib; {
           changelog = "https://marketplace.visualstudio.com/items/DavidAnson.vscode-markdownlint/changelog";
@@ -966,8 +971,8 @@ let
         mktplcRef = {
           name = "prettier-vscode";
           publisher = "esbenp";
-          version = "9.9.0";
-          sha256 = "sha256-Yr7M4HyRNcsBf8YglQLvyZjblMhtkpMP+f9SH8oUav0=";
+          version = "9.10.4";
+          sha256 = "sha256-khtyB0Qbm+iuM1GsAaF32YRv1VBTIy7daeCKdgwCIC8=";
         };
         meta = with lib; {
           changelog = "https://marketplace.visualstudio.com/items/esbenp.prettier-vscode/changelog";
@@ -1406,8 +1411,8 @@ let
         mktplcRef = {
           name = "elixir-ls";
           publisher = "JakeBecker";
-          version = "0.12.0";
-          sha256 = "sha256-ZwdGcsvmEKDH5ZAkKiLEV/3ru74BittnxibMWbdkaco=";
+          version = "0.13.0";
+          sha256 = "sha256-1uaLFTMvkcYrYAt9qDdISJneKxHo9qsris70iowGW2s=";
         };
         meta = with lib; {
           changelog = "https://marketplace.visualstudio.com/items/JakeBecker.elixir-ls/changelog";
@@ -1550,8 +1555,8 @@ let
         mktplcRef = {
           name = "magit";
           publisher = "kahole";
-          version = "0.6.18";
-          sha256 = "0sqzz5bbqqg60aypvwxcqnxrr72gmwfj9sv0amgkyaf60zg5sf7w";
+          version = "0.6.36";
+          sha256 = "sha256-4712BPibXJkkq0XEO9n0ZrdXAcID7IAabu/FOTiTeTo=";
         };
         meta = {
           license = lib.licenses.mit;
@@ -2517,8 +2522,8 @@ let
         mktplcRef = {
           name = "code-spell-checker";
           publisher = "streetsidesoftware";
-          version = "2.11.1";
-          sha256 = "sha256-o6Se+xpqwrdJIMnVE/HaDGIoDqZkeX0nTGHa8GjaqVQ=";
+          version = "2.15.0";
+          sha256 = "sha256-YfcO/01nO+92xZEJgYyLYAkqXMqfV/QDkcN9Dnjp5ZA=";
         };
         meta = with lib; {
           changelog = "https://marketplace.visualstudio.com/items/streetsidesoftware.code-spell-checker/changelog";

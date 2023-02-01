@@ -16,8 +16,7 @@
 , enablePython ? true
 
 # for determining the latest compatible linuxPackages
-, linuxPackages_5_15 ? pkgs.linuxKernel.packages.linux_5_15
-, linuxPackages_6_0 ? pkgs.linuxKernel.packages.linux_6_0
+, linuxPackages_6_1 ? pkgs.linuxKernel.packages.linux_6_1
 }:
 
 let
@@ -204,7 +203,7 @@ let
         changelog = "https://github.com/openzfs/zfs/releases/tag/zfs-${version}";
         license = lib.licenses.cddl;
         platforms = lib.platforms.linux;
-        maintainers = with lib.maintainers; [ hmenke jcumming jonringer wizeman globin ];
+        maintainers = with lib.maintainers; [ jcumming jonringer wizeman globin ];
         mainProgram = "zfs";
         # If your Linux kernel version is not yet supported by zfs, try zfsUnstable.
         # On NixOS set the option boot.zfs.enableUnstable.
@@ -217,28 +216,28 @@ in {
   # to be adapted
   zfsStable = common {
     # check the release notes for compatible kernels
-    kernelCompatible = kernel.kernelOlder "5.20";
-    latestCompatibleLinuxPackages = linuxPackages_5_15;
+    kernelCompatible = kernel.kernelOlder "6.2";
+    latestCompatibleLinuxPackages = linuxPackages_6_1;
 
     # this package should point to the latest release.
-    version = "2.1.6";
+    version = "2.1.9";
 
-    sha256 = "sha256-gd5WlNtnoSiVj4sKUGf0WhR7Z1GPebwu3Z1mkNsoC/I=";
+    sha256 = "RT2ijcXhdw5rbz1niDjrqg6G/uOjyrJiTlS4qijiWqc=";
   };
 
   zfsUnstable = common {
     # check the release notes for compatible kernels
-    kernelCompatible = kernel.kernelOlder "6.1";
-    latestCompatibleLinuxPackages = linuxPackages_6_0;
+    kernelCompatible = kernel.kernelOlder "6.2";
+    latestCompatibleLinuxPackages = linuxPackages_6_1;
 
     # this package should point to a version / git revision compatible with the latest kernel release
     # IMPORTANT: Always use a tagged release candidate or commits from the
     # zfs-<version>-staging branch, because this is tested by the OpenZFS
     # maintainers.
-    version = "2.1.7-staging-2022-10-27";
-    rev = "04f1983aab16d378be376768275856bc38be48bd";
+    version = "2.1.10-staging-2023-01-24";
+    rev = "92e0d9d183ce6752cd52f7277c8321d81df9ffee";
 
-    sha256 = "sha256-6s9Qcw6Qqq7+JU9UPa8DDu2yzhD1OV3piLlYsgEoIhg=";
+    sha256 = "RT2ijcXhdw5rbz1niDjrqg6G/uOjyrJiTlS4qijiWqc=";
 
     isUnstable = true;
   };

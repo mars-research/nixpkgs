@@ -1506,6 +1506,8 @@ self: super: with self; {
 
   caldav = callPackage ../development/python-modules/caldav { };
 
+  calver = callPackage ../development/python-modules/calver { };
+
   callee = callPackage ../development/python-modules/callee { };
 
   calmjs-parse = callPackage ../development/python-modules/calmjs-parse { };
@@ -4992,6 +4994,8 @@ self: super: with self; {
 
   keystone-engine = callPackage ../development/python-modules/keystone-engine { };
 
+  keyrings-passwordstore = callPackage ../development/python-modules/keyrings-passwordstore { };
+
   keystoneauth1 = callPackage ../development/python-modules/keystoneauth1 { };
 
   keyutils = callPackage ../development/python-modules/keyutils {
@@ -5519,6 +5523,10 @@ self: super: with self; {
 
   mariadb = callPackage ../development/python-modules/mariadb { };
 
+  marisa = callPackage ../development/python-modules/marisa {
+    inherit (pkgs) marisa;
+  };
+
   marisa-trie = callPackage ../development/python-modules/marisa-trie { };
 
   markdown2 = callPackage ../development/python-modules/markdown2 { };
@@ -5735,6 +5743,8 @@ self: super: with self; {
   miniupnpc = callPackage ../development/python-modules/miniupnpc {
     inherit (pkgs.darwin) cctools;
   };
+
+  mip = callPackage ../development/python-modules/mip { };
 
   misaka = callPackage ../development/python-modules/misaka { };
 
@@ -6446,6 +6456,8 @@ self: super: with self; {
   };
 
   opencensus = callPackage ../development/python-modules/opencensus { };
+
+  opencensus-context = callPackage ../development/python-modules/opencensus-context { };
 
   opencv3 = toPythonModule (pkgs.opencv3.override {
     enablePython = true;
@@ -7332,9 +7344,15 @@ self: super: with self; {
 
   proto-plus = callPackage ../development/python-modules/proto-plus { };
 
+  # Protobuf 4.x
   protobuf = callPackage ../development/python-modules/protobuf {
     # If a protobuf upgrade causes many Python packages to fail, please pin it here to the previous version.
     inherit (pkgs) protobuf;
+  };
+
+  # Protobuf 3.x
+  protobuf3 = callPackage ../development/python-modules/protobuf {
+    protobuf = pkgs.protobuf3_20;
   };
 
   protobuf3-to-dict = callPackage ../development/python-modules/protobuf3-to-dict { };
@@ -8980,6 +8998,8 @@ self: super: with self; {
   python-dateutil = callPackage ../development/python-modules/dateutil { };
 
   python-dbusmock = callPackage ../development/python-modules/python-dbusmock { };
+
+  python-decouple = callPackage ../development/python-modules/python-decouple { };
 
   pythondialog = callPackage ../development/python-modules/pythondialog { };
 
@@ -11432,6 +11452,8 @@ self: super: with self; {
 
   types-protobuf = callPackage ../development/python-modules/types-protobuf { };
 
+  types-psutil = callPackage ../development/python-modules/types-psutil { };
+
   types-python-dateutil = callPackage ../development/python-modules/types-python-dateutil { };
 
   types-pytz = callPackage ../development/python-modules/types-pytz { };
@@ -12124,8 +12146,6 @@ self: super: with self; {
   xvfbwrapper = callPackage ../development/python-modules/xvfbwrapper {
     inherit (pkgs.xorg) xorgserver;
   };
-
-  xxh = callPackage ../tools/networking/xxh { };
 
   xxhash = callPackage ../development/python-modules/xxhash { };
 

@@ -328,7 +328,11 @@ let
 
     domain-name = callPackage ../development/ocaml-modules/domain-name { };
 
+    domainslib = callPackage ../development/ocaml-modules/domainslib { };
+
     dose3 = callPackage ../development/ocaml-modules/dose3 { };
+
+    dscheck = callPackage ../development/ocaml-modules/dscheck { };
 
     dssi = callPackage ../development/ocaml-modules/dssi { };
 
@@ -648,8 +652,6 @@ let
 
     js_of_ocaml = callPackage ../development/tools/ocaml/js_of_ocaml { };
 
-    js_of_ocaml-camlp4 = callPackage ../development/tools/ocaml/js_of_ocaml/camlp4.nix {};
-
     js_of_ocaml-compiler = callPackage ../development/tools/ocaml/js_of_ocaml/compiler.nix {};
 
     js_of_ocaml-lwt = callPackage ../development/tools/ocaml/js_of_ocaml/lwt.nix {};
@@ -736,6 +738,8 @@ let
     };
 
     lo = callPackage ../development/ocaml-modules/lo { };
+
+    lockfree = callPackage ../development/ocaml-modules/lockfree { };
 
     logs = callPackage ../development/ocaml-modules/logs { };
 
@@ -1115,6 +1119,8 @@ let
     opus = callPackage ../development/ocaml-modules/opus { };
 
     ordering = callPackage ../development/ocaml-modules/ordering { };
+
+    oseq = callPackage ../development/ocaml-modules/oseq { };
 
     otfm = callPackage ../development/ocaml-modules/otfm { };
 
@@ -1557,10 +1563,6 @@ let
 
     zmq-lwt = callPackage ../development/ocaml-modules/zmq/lwt.nix { };
 
-    ocsigen_deriving = callPackage ../development/ocaml-modules/ocsigen-deriving {
-      oasis = ocaml_oasis;
-    };
-
     # Jane Street
 
     janePackage =
@@ -1576,7 +1578,7 @@ let
     if lib.versionOlder "4.10.2" ocaml.version
     then import ../development/ocaml-modules/janestreet/0.15.nix {
       inherit self;
-      inherit (pkgs) fetchpatch lib openssl zstd;
+      inherit (pkgs) bash fetchpatch lib openssl zstd;
     }
     else if lib.versionOlder "4.08" ocaml.version
     then import ../development/ocaml-modules/janestreet/0.14.nix {
@@ -1654,7 +1656,7 @@ in let inherit (pkgs) callPackage; in rec
 
   ocamlPackages_5_0 = mkOcamlPackages (callPackage ../development/compilers/ocaml/5.0.nix { });
 
-  ocamlPackages_latest = ocamlPackages_4_14;
+  ocamlPackages_latest = ocamlPackages_5_0;
 
   ocamlPackages = ocamlPackages_4_14;
 }

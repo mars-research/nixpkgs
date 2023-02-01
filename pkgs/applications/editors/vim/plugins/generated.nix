@@ -833,6 +833,18 @@ final: prev:
     meta.homepage = "https://github.com/chriskempson/base16-vim/";
   };
 
+  bat-vim = buildVimPluginFrom2Nix {
+    pname = "bat.vim";
+    version = "2022-11-14";
+    src = fetchFromGitHub {
+      owner = "jamespwilliams";
+      repo = "bat.vim";
+      rev = "cc038af97410bfc8da2e29f7eefa51f565346993";
+      sha256 = "17f9vwy3qfyl553hddah5zbj8gwww772frlvw51zskf9phdg17la";
+    };
+    meta.homepage = "https://github.com/jamespwilliams/bat.vim/";
+  };
+
   bats-vim = buildVimPluginFrom2Nix {
     pname = "bats.vim";
     version = "2013-07-03";
@@ -3582,6 +3594,18 @@ final: prev:
       sha256 = "0gvr9fwbc22m2rfwz3ficlrk5yk0q4zaaplma4l5zarrxswv9csb";
     };
     meta.homepage = "https://github.com/rktjmp/hotpot.nvim/";
+  };
+
+  html5-vim = buildVimPluginFrom2Nix {
+    pname = "html5.vim";
+    version = "2020-08-22";
+    src = fetchFromGitHub {
+      owner = "othree";
+      repo = "html5.vim";
+      rev = "7c9f6f38ce4f9d35db7eeedb764035b6b63922c6";
+      sha256 = "1hgbvdpmn3yffk5ahz7hz36a7f5zjc1k3pan5ybgncmdq9f4rzq6";
+    };
+    meta.homepage = "https://github.com/othree/html5.vim/";
   };
 
   hydra-nvim = buildVimPluginFrom2Nix {
@@ -7186,6 +7210,18 @@ final: prev:
       sha256 = "1fdsx7d5nyhhklwidgh387ijd485g2836rwd5i1r0di777mp7w80";
     };
     meta.homepage = "https://github.com/norcalli/snippets.nvim/";
+  };
+
+  solarized-nvim = buildVimPluginFrom2Nix {
+    pname = "solarized.nvim";
+    version = "2022-12-02";
+    src = fetchFromGitHub {
+      owner = "shaunsingh";
+      repo = "solarized.nvim";
+      rev = "36615f1e4d16b87def801a75132f4aab5944e9fc";
+      sha256 = "1nn12zpsgiq9idsa93s04m8l2mpb2aq7f7n11cs2yhv2kbb9krlf";
+    };
+    meta.homepage = "https://github.com/shaunsingh/solarized.nvim/";
   };
 
   sonokai = buildVimPluginFrom2Nix {
@@ -12895,6 +12931,18 @@ final: prev:
       sha256 = "0ncv6kjyywljsq5fz71rkmgmqxm7msyscgndnj055bnx5sh9wk80";
     };
     meta.homepage = "https://github.com/simonrw/vim-yapf/";
+  };
+
+  vim-zettel = buildVimPluginFrom2Nix {
+    pname = "vim-zettel";
+    version = "2022-09-05";
+    src = fetchFromGitHub {
+      owner = "michal-h21";
+      repo = "vim-zettel";
+      rev = "e38119f98c888b6fc700f97e363254ddafc950ba";
+      sha256 = "1a4rc7blj7lh318x8cgyyi9q3m5szdz2f1frn6yga5vqd9cyv877";
+    };
+    meta.homepage = "https://github.com/michal-h21/vim-zettel/";
   };
 
   vim2hs = buildVimPluginFrom2Nix {
